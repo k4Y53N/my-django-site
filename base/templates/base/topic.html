@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Topic: {{ topic }}</h1>
+    <form action="" method='get'>
+        <label>Search Title:</label>
+        <input type="text" name="title" placeholder="title...">
+        <label>Search Author:</label>
+        <input type="text" name="author" placeholder="author...">
+        
+        <input type="submit" value="Search article">
+    </form>
+
+    <form action="" method="post">
+        {% csrf_token %}
+        
+        {{article_form.as_p}}
+        {{comment_form.as_p}}
+
+        <input type="submit" value="add new article">
+
+    </form>
+
+    
+    <hr>
+    {% for article in articles %}
+        <a href="{% url 'article' topic.name article.id %}">
+            <h2>title: {{article.title}}</h2>
+            <p>author: {{article.author}}</p>
+            <p>created: {{article.created}}  ({{ article.created|timesince }} ago)</p>
+        </a>
+        <hr>
+    {% endfor %}
+{% endblock content %}
+

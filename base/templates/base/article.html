@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Topic: <a href="{% url 'topic' article.topic.name %}">{{article.topic.name}}</a></h2>
+    <h2>title: {{ article.title }}</h2>
+    <h4>created: {{ article.created }} ({{ article.created|timesince }})</h4>
+    <h4>updated: {{ article.updated }} ({{ article.updated|timesince }})</h4>
+    <h4>author: {{ article.author }}</h4>
+    <p>{{ article.content }}</p>
+    {% for message in article.message_set.all %}
+        <li>@{{message.author}}: {{message.content}} ({{ message.created|timesince }})</li>
+    {% endfor %}
+
+    <hr>
+
+    {% for comment in comments %}
+        <p>
+            {{ comment.author }}: {{ comment.content }}
+        </p>
+        {% for message in comment.message_set.all %}
+            <li>@{{message.author}}: {{message.content}} ({{ message.created|timesince }})</li>
+        {% endfor %}
+            <form action="{% url 'add-msg' comment.id %}" method="post">
+                {% csrf_token %}
+                {{ message_form}}
+                <input type="submit" value="leave message"">
+            </form>
+
+        <hr>
+    {% endfor %}
+
+    {% if request.user.is_authenticated %}
+        <form action="" method="post">
+            {% csrf_token %}
+            {{ comment_form.as_p }}
+            <input type="submit" value="add comment">
+        </form>
+    {% else %}
+        <a href="{% url 'login' %}">login to add comment</a>
+    {% endif %}
+
+
+{% endblock content %}

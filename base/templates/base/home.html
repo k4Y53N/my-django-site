@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Welcome to my website</h1>
+
+    {% if request.user.is_authenticated %}
+    <form action="" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Create Topic">
+    </form>
+    {% else %}
+        <a href="{% url 'login' %}">login to add topic</a>
+
+    {% endif %}
+    
+
+    <form action="" method="get">
+        {{ form.as_p }}
+        <input type="submit" value="Filter Topic(blank=All)">
+    </form>
+    <hr>
+
+    
+
+    {% for topic in topics %}
+        
+        <h3>
+            <a href="{% url 'topic' topic.name %}">{{topic.name}} </a> has {{topic.article_set.count}} articles created: {{topic.created|timesince}} ago
+        </h3>
+        
+        <hr>
+    {% endfor %}
+
+{% endblock content %}
