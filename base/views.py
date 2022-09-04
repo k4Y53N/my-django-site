@@ -72,7 +72,7 @@ def register_view(request: HttpRequest):
 
 
 def topic_view(request: HttpRequest, topic_name):
-    topic = get_object_or_404(Topic, name__icontains=topic_name)
+    topic = get_object_or_404(Topic, name=topic_name)
 
     if request.method == 'POST':
         if not request.user.is_authenticated:
