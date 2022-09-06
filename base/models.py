@@ -7,8 +7,13 @@ from django.contrib.auth.models import User
 class Topic(models.Model):
     name = models.CharField(max_length=50, unique=True)
     created = models.DateTimeField(auto_now_add=True)
+
     def __str__(self) -> str:
         return self.name
+    
+    @property
+    def article_count(self):
+        return self.article_set.count()
 
 
 class Article(models.Model):
@@ -17,9 +22,17 @@ class Article(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
-    
+
     def __str__(self) -> str:
         return self.title
+
+    @property
+    def topic_id(self):
+        return self.topic.id
+    
+    @property
+    def author_id(self):
+        return self.author.id
 
 
 class Comment(models.Model):
@@ -28,7 +41,7 @@ class Comment(models.Model):
     content = models.TextField(max_length=500)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
-    
+
     def __str__(self) -> str:
         return f'{self.author}: {self.content}'
 
@@ -42,3 +55,7 @@ class Message(models.Model):
 
     def __str__(self) -> str:
         return self.content
+
+    @property
+    def author_id(self):
+        return self.author.id
