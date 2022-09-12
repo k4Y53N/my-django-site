@@ -5,8 +5,6 @@ from rest_framework import generics
 from .serializers import ArticleSerializers, CommentSerializer, MessageSerializer, TopicSerializers
 from base.models import Article, Message, Topic, Comment
 
-from api import serializers
-
 
 @api_view(['GET'])
 def api_home_view(request):

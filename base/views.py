@@ -81,13 +81,9 @@ def topic_view(request: HttpRequest, topic_name):
         comment_form = CommentForm(request.POST)
         if article_form.is_valid() and comment_form.is_valid():
             article = article_form.save(commit=False)
-            comment = comment_form.save(commit=False)
+            article.user = request.user
             article.topic = topic
-            article.author = request.user
-            comment.article = article
-            comment.author = request.user
             article.save()
-            comment.save()
 
     article_form = ArticleForm()
     comment_form = CommentForm()
@@ -122,17 +118,17 @@ def article_view(request: HttpRequest, topic_name, article_id):
 
         comment_form = CommentForm(request.POST)
         if not comment_form.is_valid():
-            messages.error(request, 'Cant add this imvalid comment')
+            messages.error(request, 'Cant add this invalid comment')
         else:
             comment = comment_form.save(commit=False)
-            comment.author = request.user
+            comment.user = request.user
             comment.article = article
             comment.save()
             article.save()
 
     comments = Comment.objects.filter(article=article)
     comment_form = CommentForm()
-    message_form = MessageForm
+    message_form = MessageForm()
 
     context = {
         'topic': topic,
@@ -151,7 +147,7 @@ def add_comment_msg_view(request, comment_id):
     if message_form.is_valid():
         message = message_form.save(commit=False)
         message.comment = comment
-        message.author = request.user
+        message.user = request.user
         message.save()
 
     return redirect(request.META.get('HTTP_REFERER'), '/')

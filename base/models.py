@@ -19,7 +19,8 @@ class Topic(models.Model):
 class Article(models.Model):
     title = models.CharField(max_length=50)
     topic = models.ForeignKey(Topic, on_delete=models.CASCADE)
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    content = models.CharField(max_length=1000)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
@@ -32,22 +33,22 @@ class Article(models.Model):
     
     @property
     def author_id(self):
-        return self.author.id
+        return self.user.id
 
 
 class Comment(models.Model):
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     article = models.ForeignKey(Article, on_delete=models.CASCADE)
     content = models.TextField(max_length=500)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
     def __str__(self) -> str:
-        return f'{self.author}: {self.content}'
+        return f'{self.user}: {self.content}'
 
 
 class Message(models.Model):
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     comment = models.ForeignKey(Comment, on_delete=models.CASCADE)
     content = models.CharField(max_length=100)
     created = models.DateTimeField(auto_now_add=True)
@@ -58,4 +59,4 @@ class Message(models.Model):
 
     @property
     def author_id(self):
-        return self.author.id
+        return self.user.id
