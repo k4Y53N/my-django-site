@@ -1,38 +1,57 @@
+from urllib import request
 from rest_framework import serializers
 from base.models import Topic, Article, Comment, Message
-from django.contrib.auth.models import User
+from rest_framework.reverse import reverse
 
 
-class UserSericlizers(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ['username']
-        
 class MessageSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Message
-        fields = ['content', 'author_id']
+    pass
 
 
 class CommentSerializer(serializers.ModelSerializer):
+    username = serializers.SerializerMethodField()
     class Meta:
         model = Comment
-        fields = ['id', 'content', 'author_id']
+        fields = ['username', 'content']
 
+    def get_username(self, obj):
+        return obj.user.username
 
-class ArticleSerializers(serializers.ModelSerializer):
-    # author = UserSericlizers(read_only=True)
-    comment_set = CommentSerializer(many=True)
+class ArticleSerializer(serializers.ModelSerializer):
+    author = serializers.SerializerMethodField()
+    url = serializers.SerializerMethodField()
 
     class Meta:
         model = Article
-        fields = ['id', 'title', 'comment_set']
-        
-    
+        fields = ['title', 'content', 'created', 'updated', 'author', 'url']
 
-class TopicSerializers(serializers.ModelSerializer):
-    # article_set = ArticleSerializers(many=True, read_only=True)
+    def get_author(self, obj):
+        return obj.user.username
+
+    def get_url(self, obj):
+        request = self.context.get('request')
+        if request is None:
+            return None
+        
+        return reverse(
+            viewname='article-detail',
+            kwargs={
+                'pk': obj.id,
+            },
+            request=request
+        )
+        
+
+class TopicSerializer(serializers.ModelSerializer):
+    url = serializers.SerializerMethodField()
 
     class Meta:
         model = Topic
-        fields = ['id', 'name', 'created', 'article_count']
+        fields = ['id', 'name', 'url']
+
+    def get_url(self, obj):
+        request = self.context.get('request')
+        if request is None:
+            return None
+
+        return reverse('topic-detail', kwargs={'topic_name': obj.name}, request=request)
