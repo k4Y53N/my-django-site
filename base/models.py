@@ -10,7 +10,7 @@ class Topic(models.Model):
 
     def __str__(self) -> str:
         return self.name
-    
+
     @property
     def article_count(self):
         return self.article_set.count()
@@ -30,7 +30,7 @@ class Article(models.Model):
     @property
     def topic_id(self):
         return self.topic.id
-    
+
     @property
     def author_id(self):
         return self.user.id

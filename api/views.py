@@ -102,6 +102,7 @@ class ArticleCommentListCreateView(generics.ListCreateAPIView):
             }
         )
         serializer.is_valid(raise_exception=True)
+        article.save()
         serializer.save(article=article, user=request.user)
 
         return Response(serializer.data)
@@ -140,6 +141,7 @@ class CommentMessageListCreateView(generics.ListCreateAPIView):
             }
         )
         serializer.is_valid(raise_exception=True)
+        comment.save()
         serializer.save(comment=comment, user=request.user)
 
         return Response(serializer.data)
