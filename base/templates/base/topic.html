@@ -26,7 +26,7 @@
     {% for article in articles %}
         <a href="{% url 'article' topic.name article.id %}">
             <h2>title: {{article.title}}</h2>
-            <p>author: {{article.author}}</p>
+            <p>author: {{article.user}}</p>
             <p>created: {{article.created}}  ({{ article.created|timesince }} ago)</p>
         </a>
         <hr>
