@@ -5,27 +5,63 @@ from rest_framework.reverse import reverse
 
 
 class MessageSerializer(serializers.ModelSerializer):
-    pass
+    username = serializers.SerializerMethodField()
+    url = serializers.SerializerMethodField()
+    
+    class Meta:
+        model = Message
+        fields = ['content', 'username', 'url']
 
+    def get_username(self, obj):
+        return obj.user.username
+    
+    def get_url(self, obj):
+        request = self.context.get('request')
+        if request is None:
+            return None
+        
+        return reverse(
+            viewname='message-detail',
+            kwargs={
+                'pk': obj.id
+            },
+            request=request
+        )
+    
 
 class CommentSerializer(serializers.ModelSerializer):
     username = serializers.SerializerMethodField()
+    url = serializers.SerializerMethodField()
+    
     class Meta:
         model = Comment
-        fields = ['username', 'content']
+        fields = ['username', 'content', 'url']
 
     def get_username(self, obj):
         return obj.user.username
 
+    def get_url(self, obj):
+        request = self.context.get('request')
+        if request is None:
+            return None
+        
+        return reverse(
+            viewname='comment-detail',
+            kwargs={
+                'pk': obj.id,
+            },
+            request=request
+        )
+
 class ArticleSerializer(serializers.ModelSerializer):
-    author = serializers.SerializerMethodField()
+    username = serializers.SerializerMethodField()
     url = serializers.SerializerMethodField()
 
     class Meta:
         model = Article
-        fields = ['title', 'content', 'created', 'updated', 'author', 'url']
+        fields = ['title', 'content', 'created', 'updated', 'username', 'url']
 
-    def get_author(self, obj):
+    def get_username(self, obj):
         return obj.user.username
 
     def get_url(self, obj):
