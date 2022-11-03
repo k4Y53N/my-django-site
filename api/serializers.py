@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from base.models import Topic, Article, Comment, Message
 from rest_framework.reverse import reverse
+from urllib.parse import quote
+
 
 
 class MessageSerializer(serializers.ModelSerializer):
@@ -89,4 +91,4 @@ class TopicSerializer(serializers.ModelSerializer):
         if request is None:
             return None
 
-        return reverse('topic-detail', kwargs={'topic_name': obj.name}, request=request)
+        return reverse('topic-detail', kwargs={'topic_name':quote(obj.name)}, request=request)

@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework.reverse import reverse
 from base.models import Topic, Article, Comment, Message
+from urllib.parse import unquote
 from . import serializers
 from .permisions import IsOwnerOrReadOnly
 
@@ -43,7 +44,7 @@ class TopicArticleListCreateView(generics.ListCreateAPIView):
     permission_classes = [IsOwnerOrReadOnly]
 
     def list(self, request, topic_name, *args, **kwargs):
-        topic = get_object_or_404(Topic, name=topic_name)
+        topic = get_object_or_404(Topic, name=unquote(topic_name))
         articles = Article.objects.filter(topic=topic)
         serializer = serializers.ArticleSerializer(
             articles,
