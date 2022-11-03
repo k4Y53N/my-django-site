@@ -1,4 +1,3 @@
-from urllib import request
 from rest_framework import serializers
 from base.models import Topic, Article, Comment, Message
 from rest_framework.reverse import reverse
